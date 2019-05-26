@@ -1,0 +1,116 @@
+import re
+import yaml
+
+with open("thai-consonants.yaml", "r") as f:
+    data = yaml.load(f.read())
+
+page_width = 816
+page_height = 612
+margin = 30
+row_width = 160
+letter_size = 60
+translit_size = 11
+metadata_size = 8
+final_size = 7
+vertical_spacing = 60
+letter_start_y = 90
+font_name = "Helvetica Neue"
+
+size(page_width, page_height)
+background(1)
+
+font(font_name, size=11)
+
+stylesheet("initial", weight="bold")
+
+def chunks(l, n):
+    """ Yield successive n-sized chunks from l """
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+        
+def style_line(l):
+    # swap out [ending] for <ending>ending</ending>
+    text_line = re.sub(r"\[(.*?)\]", r"<initial>\1</initial>", l)
+    return "<w>%s</w>" % text_line
+
+def draw_row(letters, x, y, draw_line=False):
+    push()
+    translate(x, y)
+
+    if draw_line:    
+        pen(0.25)
+        stroke(0.5)
+        #line(0, -letter_size, page_width - (margin * 2), -letter_size)
+        line(-20, -28, -20, page_height - (margin * 4))
+    
+    stylesheet("initial", fill="#20cb2c")
+    stylesheet("italics", italic=True)
+    stylesheet("class", italic=True, fill="#202ccb")
+    stylesheet("final", italic=True, fill="#888888")
+
+    for letter in letters:
+        # font("Thonburi", size=letter_size, weight="regular", italic=False)
+        font("TH Sarabun New", size=letter_size, weight="regular", italic=False)
+        fill(0)
+        text(letter['character'], letter['x_adjust'], 0)
+        
+        font(font_name, size=translit_size)
+        text(40, -15, xml=letter['transliteration'])
+        
+        content = "<class>" + letter['class'] + "</class> " + letter['meaning'] + " <final>" + letter['final'] + "</final>"
+        font(font_name, size=metadata_size)
+        text(40, -2, xml=content)
+            
+        translate(0, vertical_spacing)
+
+    font(sc=False)
+    
+    pop()
+
+def parse_list(letters):
+    response = []
+    
+    for line in letters:
+        data = line.split('|')
+        
+        group = {
+            'character': data[0].strip(),
+            'transliteration': style_line(data[1].strip()),
+            'final': '-' + data[2].strip() if data[2].strip() else '',
+            'class': data[3].strip(),
+            'meaning': data[4].strip(),
+            'x_adjust': float(data[5].strip()) if data[5].strip() != '' else 0,
+        }
+        
+        response.append(group)
+    
+    return response
+
+
+# Heading
+
+font(font_name, size=14, tracking=15)
+text("ТАЙСКОЕ ПИСЬМО — СОГЛАСНЫЕ", margin, margin + 10)
+
+align(RIGHT)
+font(font_name, size=9, italic=True, tracking=0)
+stroke(0)
+fill(0.5)
+# text("bencrowder.net • Last modified {}".format(data['updated']), page_width-margin, margin + 10)
+font(italic=False)
+
+align(LEFT)
+pen(0.5)
+
+# Rows
+letter_list = chunks(parse_list(data['letters']), 9)
+
+for i, row in enumerate(letter_list):
+    draw_row(row, (i * row_width) + margin, letter_start_y, i)
+
+# Manual stuff
+font("Menlo", size=translit_size)
+for letter in data['manual']:
+    text(letter['char'], letter['x'], letter['y'])
+
+export(data['output'])
