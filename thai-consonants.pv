@@ -78,7 +78,9 @@ def draw_row(letters, x, y, draw_line=False):
         font(font_name, size=translit_size)
         text(40, -15, xml=letter['transliteration'])
         
-        content = "<class>" + letter['class'] + "</class> " + letter['meaning'] + " <final>" + letter['final'] + "</final>"
+        content = "<class>" + letter['class'] + "</class> " + letter['meaning'] 
+        if letter['final']:
+            content += " <final>" + letter['final'] + "</final>"
         font(font_name, size=metadata_size)
         text(40, -2, xml=content)
             
@@ -131,7 +133,7 @@ for i, row in enumerate(letter_list):
 
 # Manual stuff
 font("Menlo", size=translit_size)
-for letter in data['manual']:
-    text(letter['char'], letter['x'], letter['y'])
+#for letter in data['manual']:
+#    text(letter['char'], letter['x'], letter['y'])
 
 export(data['output'])
