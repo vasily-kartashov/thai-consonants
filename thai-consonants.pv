@@ -4,17 +4,19 @@ import yaml
 with open("thai-consonants.yaml", "r") as f:
     data = yaml.load(f.read())
 
-page_width = 816
+page_width = 842
 page_height = 612
 margin = 30
-row_width = 160
-letter_size = 60
-translit_size = 11
-metadata_size = 8
+row_width = 165
+letter_size = 64
+translit_size = 12
+metadata_size = 9
 final_size = 7
 vertical_spacing = 60
 letter_start_y = 90
-font_name = "Helvetica Neue"
+#font_name = "Charis SIL"
+# font_name = "Gentium Plus"
+font_name = "Linux Libertine"
 
 size(page_width, page_height)
 background(1)
@@ -43,14 +45,15 @@ def draw_row(letters, x, y, draw_line=False):
         #line(0, -letter_size, page_width - (margin * 2), -letter_size)
         line(-20, -28, -20, page_height - (margin * 4))
     
-    stylesheet("initial", fill="#20cb2c")
+    stylesheet("initial", fill="#20602c")
     stylesheet("italics", italic=True)
-    stylesheet("class", italic=True, fill="#202ccb")
+    stylesheet("class", italic=True, fill="#002c7b")
     stylesheet("final", italic=True, fill="#888888")
 
     for letter in letters:
         # font("Thonburi", size=letter_size, weight="regular", italic=False)
         font("TH Sarabun New", size=letter_size, weight="regular", italic=False)
+        
         fill(0)
         text(letter['character'], letter['x_adjust'], 0)
         
