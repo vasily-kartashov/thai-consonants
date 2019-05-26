@@ -1,8 +1,24 @@
 import re
 import yaml
+import math
 
 with open("thai-consonants.yaml", "r") as f:
     data = yaml.load(f.read())
+
+def alpha_generator(min_alpha):
+    frequencies = {}
+    with open("frequencies.txt", "r") as f:
+        for l in f:
+            (char, num, _) = l.decode('utf8').split()
+            num_ = int(num.replace(",", ""))
+            frequencies[char] = num_
+    m0 = min(frequencies.values())
+    m1 = max(frequencies.values())
+    a = (math.log(m1) - math.log(m0)) / (1 - min_alpha)
+    b = m1 / math.exp(a)
+    return lambda c: math.log(frequencies[c] / b) / a
+
+alpha_ = alpha_generator(0.0)
 
 page_width = 842
 page_height = 612
@@ -55,7 +71,9 @@ def draw_row(letters, x, y, draw_line=False):
         font("TH Sarabun New", size=letter_size, weight="regular", italic=False)
         
         fill(0)
+        alpha(alpha_(letter['character']))
         text(letter['character'], letter['x_adjust'], 0)
+        alpha(1.0)
         
         font(font_name, size=translit_size)
         text(40, -15, xml=letter['transliteration'])
