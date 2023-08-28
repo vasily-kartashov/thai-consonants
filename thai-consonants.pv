@@ -83,7 +83,7 @@ def draw_row(letters, x, y, draw_line=False):
         if letter['final']:
             content += " <final>" + letter['final'] + "</final>"
         font(font_name, size=metadata_size)
-        text(40, -2, xml=content)
+        text(40, -2, row_width - 65, xml=content)
             
         translate(0, vertical_spacing)
 
