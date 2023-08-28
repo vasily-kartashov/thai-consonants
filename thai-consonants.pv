@@ -3,14 +3,14 @@ import yaml
 import math
 from datetime import datetime
 
-with open("thai-consonants.yaml", "r") as f:
-    data = yaml.load(f.read())
+with open("thai-consonants.yaml", "r", encoding='utf-8') as f:
+    data = yaml.load(f.read(), Loader=yaml.SafeLoader)
 
 def alpha_generator(min_alpha):
     frequencies = {}
-    with open("frequencies.txt", "r") as f:
+    with open("frequencies.txt", "r", encoding='utf-8') as f:
         for l in f:
-            (char, num, _) = l.decode('utf8').split()
+            (char, num, _) = l.split()
             num_ = int(num.replace(",", ""))
             frequencies[char] = num_
     m0 = min(frequencies.values())
@@ -44,7 +44,7 @@ stylesheet("initial", weight="bold")
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l """
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i+n]
         
 def style_line(l):
