@@ -4,3 +4,8 @@
 
 произношение и транслитерация: http://www.thai-language.com
 статистика по частоте: http://pioneer.chula.ac.th/~awirote/ling/ThaiStat.pdf
+
+### Инструкции по сборке
+- https://plotdevice.io/
+- plotdevice --install pyyaml
+- plotdevice thai-consonants.pv
